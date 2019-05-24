@@ -1,0 +1,202 @@
+@(species: String)
+@home.main("") {
+
+
+    <div class="row">
+        <div class="form-group col-sm-12">
+            <h2 class="page-heading">@species overview page</h2>
+        </div>
+    </div>
+
+
+    <label>Select the columns to display:</label>
+    <div id="checkbox" class="checkbox">
+
+    </div>
+    <div id="toolbar">
+            &nbsp;Keyword：
+    </div>
+
+    <table class="display table table-bordered" id="table" data-pagination="true" data-search="true"
+    data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100, all]" data-search-align="left" data-multiple-search="true"
+    >
+        <thead>
+            <tr>
+                <th data-field='geneid' data-sortable='true' id="marker">GeneID</th>
+
+            </tr>
+        </thead>
+    </table>
+    <div id="charts" align="center"></div>
+    <script>
+            function setColumns(value) {
+                var element = $("input:checkbox[value=" + value + "]");
+                if (element.is(":checked")) {
+                    $('#table').bootstrapTable('showColumn', value);
+                } else {
+                    $('#table').bootstrapTable('hideColumn', value);
+                }
+            }
+
+            $(document).ready(function () {
+
+                var array = ["Chr", "Strand", "Start", "End", "GO", "Pfam", "Interpro", "Kegg","Pathway"];
+
+                var values = ["chr", "strand", "start", "end", "go", "pfam", "ipr", "ko","pathway"];
+                var thHtml = "";
+                $.each(array, function (i, v) {
+                    thHtml += "<th data-field='" + values[i] + "' data-sortable='true'>" + v + "</th>"
+                });
+                $("#marker").after(thHtml);
+
+
+                var html = "";
+                $.each(array, function (n, value) {
+                            html += "<label style='margin-right: 15px'>" +
+                                    "<input type='checkbox' checked='checked' value='" + values[n] + "' onclick=\"setColumns('" + values[n] + "')\">" + value +
+                                    "</label>"
+                        }
+                );
+                $("#checkbox").append(html);
+
+
+                $('#table').bootstrapTable({
+                    method: 'post',
+                    url: "@routes.RiceController.getAllRice(species)",
+                    sidePagination: "server",
+                    pageNumber: 1,
+                    pagination: true,
+                    pageList: [10, 25, 50, 100],
+                    contentType: "application/x-www-form-urlencoded",
+                    columns: [
+                        {
+                            field: "geneid",
+                            title: "Gene_ID",
+                            formatter: function (value, row, index) {
+                                var geneid = "<p><a href='/RiceRC/riceInfo/moreInfo?id=" + row.id +"' target='_blank'>" + row.geneid + "</a></p>";
+
+                                return geneid;
+                            }
+                        }, {
+                            field: "chr",
+                            title: "Chr"
+                        }, {
+                            field: "start",
+                            title: "Start"
+                        }, {
+                            field: "end",
+                            title: "End"
+                        }, {
+                            field: "strand",
+                            title: "Strand"
+                        }, {
+                            field: "go",
+                            title: "GO",
+                            formatter: function (value, row, index) {
+                                var go = "";
+                                if (row.go != "-") {
+                                    var array = row.go.split(";");
+                                    $.each(array, function (i, v) {
+                                        go += "<p><a href='http://amigo.geneontology.org/amigo/term/" + v +"' target='_blank'>" + v + "</a></p>"
+                                    });
+                                }else{
+                                    go = "-"
+                                }
+
+                                return go;
+                            }
+                        }, {
+                            field: "pfam",
+                            title: "Pfam",
+                            formatter: function (value, row, index) {
+                                var pfam = "";
+                                if (row.pfam != "-") {
+                                    var array = row.pfam.split(";");
+                                    $.each(array, function (i, v) {
+                                        pfam += "<p><a href='http://pfam.xfam.org/family/" + v +"' target='_blank'>" + v + "</a></p>"
+                                    });
+                                }else{
+                                    pfam = "-"
+                                }
+
+                                return pfam;
+                            }
+                        }, {
+                            field: "ipr",
+                            title: "Interpro",
+                            formatter: function (value, row, index) {
+                                var ipr = "";
+                                if (row.ipr != "-") {
+                                    var array = row.ipr.split("|");
+                                    $.each(array, function (i, v) {
+                                        var iprId = v.substring(v.length - 10, v.length - 1);
+                                        var iprFuc = v.substring(0, v.length - 11);
+                                        ipr += "<p><a href='http://www.ebi.ac.uk/interpro/entry/" + iprId +"' target='_blank'>" + iprId + "</a> : <span>" + iprFuc + "</span></p>"
+                                    });
+                                }else{
+                                    ipr = "-"
+                                }
+
+                                return ipr;
+                            }
+
+                        }, {
+                            field: "ko",
+                            title: "KEGG",
+                            formatter: function (value, row, index) {
+                                var ko = "";
+                                if (row.ko != "-") {
+                                    var array = row.ko.split(";");
+                                    $.each(array, function (i, v) {
+                                        ko += "<p><a href='https://www.kegg.jp/dbget-bin/www_bget?ko:" + v +"' target='_blank'>ko" + v  + "</a></p>"
+                                    });
+                                }else{
+                                    ko = "-"
+                                }
+
+                                return ko;
+                            }
+                        },{
+                            field: "pathway",
+                            title: "Pathway",
+                            formatter: function (value, row, index) {
+                                var pathway = "";
+                                if (row.pathway != "-") {
+                                    var array = row.pathway.split(";");
+                                    $.each(array, function (i, v) {
+                                        pathway += "<p>" + v  + "</p>"
+                                    });
+                                }else{
+                                    pathway = "-"
+                                }
+
+                                return pathway;
+                            }
+                        }
+                    ]
+                });
+
+                var hiddenArray = ["ipr","pathway"];
+
+                $.each(hiddenArray, function (n, value) {
+                            $('#table').bootstrapTable('hideColumn', value);
+                            $("input:checkbox[value=" + value + "]").attr("checked", false)
+                        }
+                );
+
+            });
+
+            function reloadInfo() {
+                $.ajax({
+                    url: "@routes.RiceController.getAllRice(species)",
+                    type: "post",
+                    success: function (data) {
+                        $("#table").bootstrapTable("load", data);
+                    }
+                })
+            }
+
+    </script>
+
+
+}

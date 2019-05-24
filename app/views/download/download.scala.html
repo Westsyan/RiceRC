@@ -1,0 +1,132 @@
+@home.main("Download") {
+
+    <style>
+            #download li {
+                list-style-type: disc ;
+            }
+
+            .gene {
+                float: left;
+                width: 25%;
+                border-bottom: 1px solid #DDDDDD;
+                padding-top: 10px;
+                padding-bottom: 20px;
+            }
+
+            th {
+                text-align: center;
+            }
+
+            tr {
+                text-align: center;
+            }
+
+            .table-bordered > tbody > tr > td {
+                border: white 0 solid;
+            }
+
+            .table-bordered > thead > tr > th {
+                border: white 0 solid;
+            }
+
+            .table{
+                border: white 0 solid;
+            }
+
+            .table-striped{
+                border: white 0 solid;
+            }
+
+            .fixed-table-container{
+                border: white 0 solid;
+
+            }
+
+
+    </style>
+
+    <div class="row">
+        <div class="form-group col-sm-12">
+            <h2 class="page-heading">Download</h2>
+        </div>
+    </div>
+
+    <div class="panel-body">
+
+        <table class="table table-striped table-bordered" id="table">
+        </table>
+    </div>
+
+
+    <script>
+            $(document).ready(function () {
+
+
+                var gene = ["02428", "9311", "Basmati1", "CJ14", "CN1B", "D62B", "DG", "DHX2H",
+                    "FH838", "FS32", "G46", "Guang8B", "Gui630", "II32", "IR64", "J4115S",
+                    "KY131", "lemont", "LJ", "N22", "NAMROO", "NIP", "R3551", "R498",
+                    "R527", "R548", "TUMBA", "WSSM", "Y58S", "YueGuang", "YX", "ZH11"];
+
+
+                $("#table").bootstrapTable({
+                    data: gene,
+                    pagination: true,
+                    pageList: [15, "All"],
+                    pageSize:15,
+                    columns: [{
+                        field: "species",
+                        title: "Species",
+                        formatter: function (value, row, index) {
+                            var species = "<a href='/RiceRC/riceInfo/riceSpecies?species=" + row + "' target='_blank'>" + row + "</a>";
+                            return species;
+                        }
+                    }, {
+                        field: "dna",
+                        title: "DNA",
+                        formatter: function (value, row, index) {
+                            var dna = "<a href='/RiceRC/utils/download?file=genome/" + row + ".genome.tar.gz'>FASTA</a>";
+                            return dna;
+                        }
+                    }, {
+                        field: "pros",
+                        title: "PROS",
+                        formatter: function (value, row, index) {
+                            var pros = "<a href='/RiceRC/utils/download?file=pros/" + row + ".pros.fasta.tar.gz'>FASTA</a>";
+                            return pros;
+                        }
+                    }, {
+                        field: "gff",
+                        title: "GFF",
+                        formatter: function (value, row, index) {
+                            var gff = "<a href='/RiceRC/utils/download?file=gff/" + row + ".gff.tar.gz'>GFF</a>";
+                            return gff;
+                        }
+                    }, {
+                        field: "annotate",
+                        title: "Annotate",
+                        formatter: function (value, row, index) {
+                            var annotate = "<a href='/RiceRC/utils/download?file=annotate/" + row + ".annotate.tar.gz'>Annotate</a>";
+                            return annotate;
+                        }
+                    }]
+
+                })
+
+
+    /*            $.each(gene, function (i, v) {
+                    var html = "<div class='gene'><h4>" + v + " profiles</h4><ul id='" + v + "Url'></ul><div>";
+                    $("#download").append(html);
+                    var array = [".Allset.annotate.tar.gz", ".Allset.pros.long.fasta.tar.gz",
+                        ".Allset.gff.tar.gz", "_genome_chr.fasta.gz"];
+                    $.each(array, function (index, value) {
+                        var download = "<li><a href = '/RiceRC/download/download?name=" + v + value + "' >" + v + value + "</a></li>";
+                        console.log(download);
+                        $("#" + v + "Url").append(download)
+                    })
+                });*/
+
+
+            })
+
+    </script>
+}

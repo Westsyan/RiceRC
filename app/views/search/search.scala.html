@@ -1,0 +1,171 @@
+@(input: String)(implicit session: Session)
+@home.main("") {
+
+    <style>
+
+            .fixed-table-container {
+                border: none;
+            }
+
+            .table > tbody > tr > td {
+                border: none;
+            }
+
+            .bootstrap-table .table {
+                border: none;
+            }
+
+            .result-border {
+                border: 1px solid #dbe3e7;
+                padding: 20px 20px 0px 20px;
+                border-radius: 5px;
+            }
+
+            .type-right {
+                float: right;
+                border-radius: 5px;
+                background-color: #F1F1F1;
+            }
+
+
+    </style>
+
+    <div align="center">
+        <div style="width: 80%;">
+
+            <div style="margin-top: 50px">
+
+                <form class="registration-form form-horizontal" id="form"
+                accept-charset="UTF-8" method="get" action="/RiceRC/Search/searchBefore">
+                    <h1>Search</h1>
+                    <input type="text" class="form-control" name="input" style="height: 40px;
+                        float: left" placeholder="Keyword">
+
+                    <button style="float: left;
+                        background-color: transparent;
+                        border: transparent;
+                        float: right;
+                        margin-top: -31px;
+                        margin-right: 10px;" type="submit">
+                        <i class="fa fa-search" style="font-size: 20px"></i>
+                    </button>
+                </form>
+
+            </div>
+            <br>
+            <br>
+            <br>
+
+            <div id="result" style="display: none">
+                <hr style="border: 1px solid #e9f3f4;">
+
+                <div style="padding-top: 10px;">
+                    <div align="left" style="font-size: 20px;"><b>Keyword : </b><span>@input</span></div>
+
+                    <ul class="nav nav-tabs" style="margin-top: 20px;padding-bottom: 10px">
+                        <li role="presentation" id="paste-tab" class="active">
+
+                            <select id="select" style="width: 200px" onchange="Search()">
+                                <option value="All" selected>All</option>
+                                <option value="02428">02428</option>
+                                <option value="9311">9311</option>
+                                <option value="Basmati1">Basmati1</option>
+                                <option value="CJ14">CJ14</option>
+                                <option value="CN1B">CN1B</option>
+                                <option value="D62B">D62B</option>
+                                <option value="DG">DG</option>
+                                <option value="DHX2H">DHX2H</option>
+                                <option value="FH838">FH838</option>
+                                <option value="FS32">FS32</option>
+                                <option value="G46">G46</option>
+                                <option value="Guang8B">Guang8B</option>
+                                <option value="Gui630">Gui630</option>
+                                <option value="II32">II32</option>
+                                <option value="IR64">IR64</option>
+                                <option value="J4115S">J4115S</option>
+                                <option value="KY131">KY131</option>
+                                <option value="lemont">lemont</option>
+                                <option value="LJ">LJ</option>
+                                <option value="N22">N22</option>
+                                <option value="NAMROO">NAMROO</option>
+                                <option value="NIP">NIP</option>
+                                <option value="R3551">R3551</option>
+                                <option value="R498">R498</option>
+                                <option value="R527">R527</option>
+                                <option value="R548">R548</option>
+                                <option value="TUMBA">TUMBA</option>
+                                <option value="WSSM">WSSM</option>
+                                <option value="Y58S">Y58S</option>
+                                <option value="YueGuang">YueGuang</option>
+                                <option value="YX">YX</option>
+                                <option value="ZH11">ZH11</option>
+                            </select>
+
+                        </li>
+                    </ul>
+
+                    <table id="table" class="table" data-pagination="true" data-page-list="[5, 10]" data-page-size="5"
+                    style="margin-top: 20px"></table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+
+            $(function () {
+
+                $("#select").select2();
+
+                if (!@input.trim.isEmpty) {
+                    Search("All");
+                }
+
+            });
+
+            function Search() {
+                var index = layer.load(1);
+
+                var obj = $("#select").val();
+
+
+                $("#table").bootstrapTable('destroy');
+                $('#table').bootstrapTable({
+                    method: 'post',
+                    url: "/RiceRC/search/getResult?tp=" + obj + "&input=@input",
+                    sidePagination: "server",
+                    pageNumber: 1,
+                    pagination: true,
+                    pageList: [5, 10],
+                    pageSize: 5,
+                    contentType: "application/x-www-form-urlencoded",
+                    showHeader: false,
+                    columns: [{
+                        field: "result",
+                        formatter: function (value, row, index) {
+                            var link = "/RiceRC/riceInfo/moreInfo?id=" + row.id;
+
+                            var main = "<div class='result-border'><a href='" + link + "' target='_blank'>" + row.geneid + "</a>" +
+                                    "<a href='/RiceRC/riceInfo/riceSpecies?species=" + row.species +"' target='_blank'><span class='type-right'>" +
+                                    "&nbsp;" + row.species + "&nbsp;</span></a><hr>";
+                            var option = "";
+                            $.each(row.result, function (i, v) {
+                                option += "<p style='font-size: 12px'><b>" + v.option + " ：</b> " + v.result + "</p>";
+                            });
+
+                            var html = main + option + "</div>";
+
+                            return html;
+                        }
+                    }]
+                });
+
+                layer.close(index);
+                $("#result").show();
+            }
+
+
+
+    </script>
+}

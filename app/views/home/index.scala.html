@@ -1,0 +1,166 @@
+@main("Rice RC") {
+
+    <style>
+            .thumbnail {
+                height: 220px;
+                text-align: center;
+                border: none;
+            }
+
+            .thumbnail > .row {
+                margin-top: 12px;
+            }
+
+            .index-text {
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
+
+
+
+
+    </style>
+    <div class="row">
+        <div class="col-md-9">
+
+
+            <div class="index-text">
+
+                <p class="text-justify">
+                    Rice is the seed of the grass species Oryza sativa (Asian rice) or Oryza glaberrima
+                    (African rice). As a cereal grain, it is the most widely consumed staple food for a large part
+                    of the world's human population, especially in Asia. It is the agricultural commodity with the
+                    third-highest worldwide production (rice, 741.5 million tonnes in 2014), after sugarcane
+                    (1.9 billion tonnes) and maize (1.0 billion tonnes).<br>
+                    Since sizable portions of sugarcane and maize crops are used for purposes other than human
+                    consumption, rice is the most important grain with regard to human nutrition and caloric intake,
+                    providing more than one-fifth of the calories consumed worldwide by humans.[2] There are many
+                    varieties of rice and culinary preferences tend to vary regionally.<br>
+                    Rice, a monocot, is normally grown as an annual plant, although in tropical areas it can
+                    survive as a perennial and can produce a ratoon crop for up to 30 years.[3] Rice cultivation
+                    is well-suited to countries and regions with low labor costs and high rainfall, as it is
+                    labor-intensive to cultivate and requires ample water. However, rice can be grown practically
+                    anywhere, even on a steep hill or mountain area with the use of water-controlling terrace
+                    systems. Although its parent species are native to Asia and certain parts of Africa,
+                    centuries of trade and exportation have made it commonplace in many cultures worldwide.
+                </p>
+            </div>
+
+
+            <div class="panel panel-default" style="margin-top: 15px;">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-database"></i> Resources</h3>
+
+
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+
+                        <div class="col-md-4 thumbnail">
+
+                            <a href="@routes.RiceController.browse()">
+                                <img src="@routes.Assets.at("images/rice4.png")" style="width: 240px;
+                                    height: 220px">
+                                <h3 style="margin-top: -130px;color:black">Species</h3>
+                            </a>
+
+                        </div>
+
+                        <div class="col-md-4 thumbnail">
+
+
+                            <img src="@routes.Assets.at("images/rice4.png")" style="width: 240px;
+                                height: 220px">
+                            <h3 style="margin-top: -130px">Genome</h3>
+
+                        </div>
+
+                        <div class="col-md-4 thumbnail">
+                            <img src="@routes.Assets.at("images/rice4.png")" style="width: 240px;
+                                height: 220px">
+                            <h3 style="margin-top: -130px">Transcriptome</h3>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div align="center" style="margin-top: 20px">
+                <a href="#" target="_blank"
+                style="text-align: center">
+                    <img src="@routes.Assets.at("images/rice2.jpg")" width="95%" style="margin-bottom: 20px">
+                </a>
+            </div>
+
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-search"></i> Search</h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" id="form" method="get" action="/RiceRC/Search/searchBefore"
+                    accept-charset="UTF-8" >
+                        <input type="text" style="float: left;
+                            height: 40px;" class="form-control" placeholder="Keyword" name="input">
+                        <button type="submit"
+                        style="float: left;
+                            background-color: transparent;
+                            border: transparent;
+                            float: right;
+                            margin-top: -31px;
+                            margin-right: 5px;"><i class="fa fa-search"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-cube"></i> Data Statistics</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="list-unstyled">
+                        <li><i class="fa fa-chevron-circle-right"></i> Rice samples: 32</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-bookmark"></i> Release Notes</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="list-unstyled">
+                        <li><i class="fa fa-chevron-circle-right"></i>
+                            Rice Resource Center database is available online on March 2019.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div style="font-size: 13px;
+        background-color: white;
+        width: 1200px;
+        /*    margin-top: 10px;*/
+        /*    position: fixed;*/
+        margin-bottom: 10px;
+        font-weight: 300;
+        color: black;
+        text-align: center;">
+        <hr>
+
+        <a href="http://www.miitbeian.gov.cn" target="_blank" >
+            沪ICP备00000000号</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;Copyright  2018 版权所有，Powered By
+        <a href="http://www.yfbio.cn" target="_blank">
+            VGsoft Team, 上海盈飞生物科技有限公司</a></div>
+
+}

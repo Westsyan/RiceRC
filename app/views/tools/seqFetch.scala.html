@@ -1,0 +1,154 @@
+@home.main("Sequences Fetch") {
+
+    <div class="row">
+        <div class="form-group col-sm-12">
+            <h2 class="page-heading">Sequences Fetch</h2>
+        </div>
+    </div>
+
+    <form class="registration-form form-horizontal" id="conditionForm"
+    style="margin: 20px;">
+
+        <div class="form-group" style="margin-top: 10px">
+            <label class="control-label col-sm-2 col-sm-offset-1">Select annotation:</label>
+            <div class="col-sm-6">
+                <select class="form-control" name="species">
+                    <option value="02428.genome">02428 Genome</option>
+                    <option value="9311v2.genome">9311 Genome</option>
+                    <option value="Basmati1.genome">Basmati1 Genome</option>
+                    <option value="CJ14.genome">CJ14 Genome</option>
+                    <option value="CN1B.genome">CN1B Genome</option>
+                    <option value="D62B.genome">D62B Genome</option>
+                    <option value="DG.genome">DG Genome</option>
+                    <option value="DHX2H.genome">DHX2H Genome</option>
+                    <option value="FH838.genome">FH838 Genome</option>
+                    <option value="FS32.genome">FS32 Genome</option>
+                    <option value="G46.genome">G46 Genome</option>
+                    <option value="Guang8B.genome">Guang8B Genome</option>
+                    <option value="Gui630.genome">Gui630 Genome</option>
+                    <option value="II32.genome">II32 Genome</option>
+                    <option value="IR64.genome">IR64 Genome</option>
+                    <option value="J4115S.genome">J4115S Genome</option>
+                    <option value="KY131.genome">KY131 Genome</option>
+                    <option value="lemont.genome">lemont Genome</option>
+                    <option value="LJ.genome">LJ Genome</option>
+                    <option value="N22.genome">N22 Genome</option>
+                    <option value="NAMROO.genome">NAMROO Genome</option>
+                    <option value="NIP.genome">NIP Genome</option>
+                    <option value="R3551.genome">R3551 Genome</option>
+                    <option value="R498.genome">R498 Genome</option>
+                    <option value="R527.genome">R527 Genome</option>
+                    <option value="R548.genome">R548 Genome</option>
+                    <option value="TUMBA.genome">TUMBA Genome</option>
+                    <option value="WSSM.genome">WSSM Genome</option>
+                    <option value="Y58Sv2.genome">Y58S Genome</option>
+                    <option value="YueGuang.genome">YueGuang Genome</option>
+                    <option value="YXv2.genome">YX Genome</option>
+                    <option value="ZH11.genome">ZH11 Genome</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="form-group" style="margin-top: 15px">
+            <label class="control-label col-sm-2 col-sm-offset-1">Search text:</label>
+            <div class="col-sm-6">
+                <textarea class="form-control" name="region" id="region" rows="5"></textarea>
+                <span class="help-block">e.g.,&nbsp;<a href="#"><em id="egChr">
+                    Chr1:1-2000 Chr2:2500-4000</em></a></span>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 35px">
+            <div class="actions col-sm-offset-3 col-sm-3">
+                <button type="button" id="search"
+                class="btn btn-primary" onclick="mySearch()" style="width: 80%;
+                    margin-top: 5px">Search</button>
+            </div>
+            <div class="actions col-sm-3" style="text-align: right">
+                <button type="reset" class="btn btn-primary" id="reset" style="width: 80%;
+                    margin-top: 5px">Reset</button>
+            </div>
+        </div>
+    </form>
+
+
+    <div id="result" style="display: none">
+        <hr>
+        <h4>Sequence:</h4>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <textarea class="form-control monospace" name="queryText" id="queryText" rows="15"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+            $(function () {
+
+                $('#egChr').click(function () {
+                    var eg = $(this).text().trim();
+                    $('#region').val(eg).focus();
+                    $("#conditionForm").formValidation("revalidateField", "region")
+                });
+
+                $('#reset').click(function () {
+                    $('#region').val("").focus();
+                    $("#conditionForm").formValidation("revalidateField", "region")
+                });
+
+                formValidation()
+
+            });
+
+            function formValidation() {
+                $('#conditionForm').formValidation({
+                    framework: 'bootstrap',
+                    icon: {
+                        valid: 'glyphicon glyphicon-ok',
+                        invalid: 'glyphicon glyphicon-remove',
+                        validating: 'glyphicon glyphicon-refresh'
+                    },
+                    fields: {
+                        region: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Region is required！'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function mySearch() {
+                var form = $("#conditionForm");
+                var fv = form.data("formValidation");
+                fv.validate();
+                if (fv.isValid()) {
+                    var index = layer.load(1, {
+                        shade: [0.1, '#fff']
+                    });
+                    $("#search").attr("disabled", true).html("Search...");
+                    $.ajax({
+                        url: "@routes.ToolsController.seqRegion()",
+                        type: "post",
+                        data: $("#conditionForm").serialize(),
+                        success: function (data) {
+                            $("#search").attr("disabled", false).html("Search").blur();
+                            layer.close(index);
+                            if (data.valid == "false") {
+                                swal("Error", data.message, "error");
+                                $("#result").hide()
+                            } else {
+                                $("#queryText").val(data.data);
+                                $("#result").show()
+                            }
+                        }
+                    });
+                }
+            }
+    </script>
+
+
+}

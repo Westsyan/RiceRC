@@ -1,0 +1,218 @@
+@()(implicit session: Session)
+@home.main("GO Enrichment Analysis") {
+
+    <div class="row">
+        <div class="form-group col-sm-12">
+            <h2 class="page-heading">GO Enrichment Analysis</h2>
+        </div>
+    </div>
+
+    <form class="registration-form form-horizontal" id="conditionForm"
+    style="margin: 20px;">
+
+        <div class="form-group" style="margin-top: 10px">
+            <label class="control-label col-sm-2 col-sm-offset-1">Gene ID:</label>
+            <div class="col-sm-6">
+                <textarea class="form-control" name="id" id="gene" rows="5"
+                style="border-radius: 4px;"></textarea>
+                <span class="help-block">e.g.,&nbsp;<a href="#"><em id="egGene">
+                    Example</em></a></span>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 25px">
+            <label class="control-label col-sm-2 col-sm-offset-1"> Species</label>
+            <div class="col-sm-6">
+                <select class="form-control" name="db" id="db" style="border-radius: 4px;">
+                    <option value="P1" selected>EUCur</option>
+                    <option value="P2">EUCte</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 25px;display: none;">
+            <label class="control-label col-sm-2 col-sm-offset-1"> Significant Level</label>
+            <div class="col-sm-6">
+                <select class="form-control" name="alpha" style="border-radius: 4px;">
+                    <option value="0.01">0.01</option>
+                    <option value="0.05" selected="selected">0.05</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 25px">
+            <label class="control-label col-sm-2 col-sm-offset-1">p-value cuttoff:</label>
+            <div class="col-sm-6">
+                <input class="form-control" type="text" value="0.05" name="pval"
+                id="pValue"
+                style="border-top-left-radius: 4px;
+                    border-bottom-left-radius: 4px;"/>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 35px">
+            <div class="actions col-sm-offset-3 col-sm-3">
+                <button type="button" id="analyse"
+                class="btn btn-primary" onclick="update()" style="width: 80%;
+                    margin-top: 5px">Excute</button>
+            </div>
+            <div class="actions col-sm-3" style="text-align: right">
+                <button type="button" class="btn btn-primary" id="reset" style="width: 80%;
+                    margin-top: 5px">Reset</button>
+                <button type="reset" style="display: none" id="r"></button>
+            </div>
+        </div>
+    </form>
+    <br>
+    <div id="result" style="display: none">
+        <hr>
+        <label>Columns to display:</label>
+        <div id="checkbox" class="checkbox" style="margin-left: 20px">
+
+        </div>
+        <div id="toolbar">
+        </div>
+        <div class="table-responsive panel-collapse collapse in " >
+            <table class="display table table-bordered" id="table" data-pagination="true" data-search="true"
+            data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100, all]" data-search-align="left" data-multiple-search="true"
+            data-show-export="true" data-export-types="['excel','txt']" data-export-data-type="all"
+            style="word-wrap: break-word">
+                <thead>
+                    <tr>
+                        <th data-field="id" data-sortable="true">ID</th>
+                        <th data-field="enrichment" data-sortable="true">Enrichment</th>
+                        <th data-field="description" data-sortable="true">Description</th>
+                        <th data-field="ratio_in_study" data-sortable="true">Ratio_In_Study</th>
+                        <th data-field="ratio_in_pop" data-sortable="true">Ratio_In_Pop</th>
+                        <th data-field="p_uncorrected" data-sortable="true">P_Uncorrected</th>
+                        <th data-field="p_bonferroni" data-sortable="true">P_Bonferroni</th>
+                        <th data-field="p_holm" data-sortable="true">P_Holm</th>
+                        <th data-field="p_sidak" data-sortable="true">P_Sidak</th>
+                        <th data-field="p_fdr" data-sortable="true">P_Fdr</th>
+                        <th data-field="namespace" data-sortable="true">Namespace</th>
+                        <th data-field="genes_in_study" data-sortable="true">Genes_In_Study</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <script>
+
+            var originalHtml = "";
+
+            $(function () {
+                originalHtml = $("#result").html();
+                $("#egGene").click(function () {
+                    var species = $("#db").val();
+
+                    var p1 = "EUCur000001,EUCur000002,EUCur000003,EUCur000004,EUCur000005,EUCur000006," +
+                            "EUCur000007,EUCur000008,EUCur000009,EUCur000010,EUCur000011,EUCur000012," +
+                            "EUCur000013,EUCur000014,EUCur000015,EUCur000016";
+
+                    var p2 = "EUCte000001,EUCte000002,EUCte000003,EUCte000004,EUCte000005,EUCte000006," +
+                            "EUCte000007,EUCte000008,EUCte000009,EUCte000010,EUCte000011,EUCte000012," +
+                            "EUCte000013,EUCte000014,EUCte000015,EUCte000016";
+
+                    if(species == "P1"){
+                        $("#gene").val(p1);
+                    }else{
+                        $("#gene").val(p2);
+                    }
+
+                });
+
+
+
+                formValidation();
+            });
+
+            function formValidation() {
+                $('#conditionForm').formValidation({
+                    framework: 'bootstrap',
+                    icon: {
+                        valid: 'glyphicon glyphicon-ok',
+                        invalid: 'glyphicon glyphicon-remove',
+                        validating: 'glyphicon glyphicon-refresh'
+                    },
+                    fields: {
+                        pval: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'This is not be empty!'
+                                },
+                                numeric: {
+                                    message: 'The p-value must be a number!'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function update() {
+                var form = $("#conditionForm")
+                var fv = form.data("formValidation");
+                fv.validate();
+                if (fv.isValid()) {
+                    $("#result").hide();
+                    var index = layer.load(1, {
+                        shade: [0.1, '#fff']
+                    });
+
+                    $("#analyse").attr("disabled", true).html("Running...");
+                    $("#result").empty().append(originalHtml);
+                    var array = ["ID", "Enrichment", "Description", "Ratio_In_Study", "Ratio_In_Pop", "P_Uncorrected",
+                        "P_Bonferroni", "P_Holm", "P_Sidak", "P_Fdr", "Namespace", "Genes_In_Study"];
+                    var values = ["id", "enrichment", "description", "ratio_in_study", "ratio_in_pop", "p_uncorrected",
+                        "p_bonferroni", "p_holm", "p_sidak", "p_fdr", "namespace", "genes_in_study"];
+                    var html = "";
+                    $.each(array, function (n, value) {
+                                html += "<label style='margin-right: 15px'>" +
+                                        "<input type='checkbox' checked='checked' value='" + values[n] + "' onclick=\"setColumns('" + values[n] + "')\">" + value +
+                                        "</label>"
+                            }
+                    );
+                    $("#checkbox").append(html);
+                    $.ajax({
+                        url: "#",
+                        type: "post",
+                        dataType: "json",
+                        data: $("#conditionForm").serialize(),
+                        success: function (data) {
+                            if (data.valid == "false") {
+                                swal("Error", data.message, "error");
+                                $("#result").hide()
+                            } else {
+                                $('#table').bootstrapTable({data: data});
+                                var hiddenArray = ["p_bonferroni", "p_holm", "p_sidak", "p_fdr", "genes_in_study"];
+                                $.each(hiddenArray, function (n, value) {
+                                    $('#table').bootstrapTable('hideColumn', value);
+                                    $("input:checkbox[value=" + value + "]").attr("checked", false)
+                                });
+                                $("#result").show()
+                            }
+                            $("#analyse").attr("disabled", false).html("Excute").blur();
+                            layer.close(index)
+                        }
+                    });
+                }
+            }
+
+
+            function setColumns(value) {
+                var element = $("input:checkbox[value=" + value + "]");
+                if (element.is(":checked")) {
+                    $('#table').bootstrapTable('showColumn', value);
+                } else {
+                    $('#table').bootstrapTable('hideColumn', value);
+                }
+            }
+
+            $('#reset').click(function () {
+                $('#r').click();
+                $("#conditionForm").formValidation("revalidateField", "pval");
+            });
+    </script>
+
+
+}

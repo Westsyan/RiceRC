@@ -1,0 +1,79 @@
+@home.main("") {
+
+    <style>
+        td{
+            text-align: center;
+        }
+        th{
+            text-align: center;
+        }
+    </style>
+
+    <div class="row">
+        <div class="form-group col-sm-12">
+            <h2 class="page-heading">Species Browse</h2>
+        </div>
+    </div>
+
+
+    <div id="toolbar">
+            &nbsp;Keyword：
+    </div>
+
+    <table class="display table table-bordered" id="table" data-pagination="true" data-search="true"
+    data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100, all]" data-search-align="left" data-multiple-search="true"
+    >
+
+    </table>
+    <div id="charts" align="center"></div>
+    <script>
+
+        $(function () {
+
+            $.ajax({
+                url:"@routes.RiceController.getAllSample()",
+                type:"post",
+                success:function (data) {
+                    $("#table").bootstrapTable({
+                        data:data,
+                        columns:[
+                            {
+                                field:"jbrowse",
+                                title:"Genome Browser",
+                                width: 120,
+                                formatter: function (value, row, index) {
+                                    var jb ="<a href='http://210.22.121.250:20795/jb/index.html?data=my_data/RiceRC/" + row.sample +"/data' target='_blank'><button class='update' title='Genome Browser'><i class='fa fa-chrome'></i></button></a>" ;
+                                    return jb;
+                                }
+                            },
+                            {
+                                field:"sample",
+                                title:"Sample Name",
+                                width: 160,
+                                formatter: function (value, row, index) {
+                                    var sample ="<a href='/RiceRC/riceInfo/riceSpecies?species=" + row.sample +"' target='_blank'>" + row.sample +"</a>" ;
+                                    return sample;
+                                }
+                            },
+                            {
+                                field:"nums",
+                                title:"Gene Number",
+                                width: 160
+                            },
+                            {
+                                field:"detail",
+                                title:"Detail"
+                            }
+                        ]
+                    });
+                }
+            })
+
+
+        })
+
+
+    </script>
+
+
+}

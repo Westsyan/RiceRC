@@ -1,0 +1,147 @@
+@(id: Int)
+@home.main("Display Synteny Blocks") {
+
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("circos/display_block.css")">
+    <script src="@routes.Assets.at("circos/d3.v4.min.js")" type="text/javascript"></script>
+
+    <style>
+
+
+            th {
+                text-align: center;
+            }
+
+    </style>
+
+
+    <div class="row">
+        <div class="form-group col-sm-12">
+            <h2 class="page-heading">Display Synteny Blocks</h2>
+        </div>
+    </div>
+
+
+    <div id="result" style="display: none;">
+
+        <div class="row" align="center">
+
+            <div class="col-sm-6" style="float: inherit">
+                <table class="table table-hover table-striped">
+                    <tbody>
+                        <tr>
+                            <td>Block ID</td>
+                            <td id="bid"></td>
+                        </tr>
+
+                        <tr>
+                            <td>Organism A</td>
+                            <td id="organism1"></td>
+                        </tr>
+
+                        <tr>
+                            <td>Location A</td>
+                            <td id="location1"></td>
+                        </tr>
+
+                        <tr>
+                            <td>Organism B</td>
+                            <td>MSU</td>
+                        </tr>
+
+                        <tr>
+                            <td>Location B</td>
+                            <td id="location2"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-6">
+                <svg id="svg" width="600" height="800"></svg>
+            </div>
+
+            <div class="col-sm-6">
+                <br>
+                <br>
+                <br>
+                <table class="table table-hover table-striped" id="table" data-pagination="true" data-page-list="[10, 25, 50, 100]"
+                style="text-align: center;">
+                    <thead>
+                        <tr>
+                            <th data-field='gene1'>Gene A</th>
+                            <th data-field='gene2'>Gene B</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="@routes.Assets.at("circos/display_block.js")" type="text/javascript"></script>
+
+    <script>
+
+
+            var data = {};
+
+            var relate = [];
+
+            $(function () {
+
+                $.ajax({
+                    url: "/RiceRC/SV/getDrawData?id=@id",
+                    type: "post",
+                    success: function (datas) {
+
+                        $("#bid").text(datas.block.bid);
+                        $("#organism1").text(datas.block.organism1);
+                        $("#location1").text(datas.block.location1);
+                        $("#location2").text(datas.block.location2);
+
+
+                        data = datas.data;
+                        if (!datas.relate.isEmpty) {
+                            relate = datas.relate;
+                        }
+
+                        DisplayBlock();
+                        $("#table").bootstrapTable({
+                            data: datas.table,
+                            columns: [
+                                {
+                                    field: "gene1",
+                                    formatter: function (value, row, index) {
+                                        var gene1 = "";
+                                        if (row.gene1 == "NA") {
+                                            gene1 = row.gene1
+                                        } else {
+                                            gene1 = "<a href='/RiceRC/riceInfo/moreInfo?id=" + row.gene1 + "' target='_blank'>" + row.gene1 + "</a>";
+                                        }
+                                        return gene1;
+                                    }
+                                }
+                            ]
+                        })
+                    }
+                });
+
+                $("#result").show();
+
+            })
+
+
+
+
+
+    </script>
+
+
+}

@@ -1,0 +1,145 @@
+@()(implicit session: Session)
+@home.main("Homologous Regions") {
+
+    <script src="@routes.Assets.at("circos/d3.v3.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("circos/bam2x.circos.js")" type="text/javascript"></script>
+
+
+    <div class="row">
+        <div class="form-group col-sm-12">
+            <h2 class="page-heading">Homologous Regions</h2>
+        </div>
+    </div>
+
+
+    <br>
+
+    <ul class="nav nav-tabs" style="margin-top: 20px;
+        padding-bottom: 10px">
+        <li role="presentation" id="paste-tab" class="active">
+
+            <select id="select" style="width: 200px" onchange="Draw()">
+                <option value="02428">02428</option>
+                <option value="9311">9311</option>
+                <option value="Basmati1">Basmati1</option>
+                <option value="CJ14">CJ14</option>
+                <option value="CN1B">CN1B</option>
+                <option value="D62B">D62B</option>
+                <option value="DG">DG</option>
+                <option value="DHX2H">DHX2H</option>
+                <option value="FH838">FH838</option>
+                <option value="FS32">FS32</option>
+                <option value="G46">G46</option>
+                <option value="Guang8B">Guang8B</option>
+                <option value="Gui630">Gui630</option>
+                <option value="II32">II32</option>
+                <option value="IR64">IR64</option>
+                <option value="J4115S">J4115S</option>
+                <option value="KY131">KY131</option>
+                <option value="lemont">lemont</option>
+                <option value="LJ">LJ</option>
+                <option value="N22">N22</option>
+                <option value="NAMROO">NAMROO</option>
+                <option value="NIP">NIP</option>
+                <option value="R3551">R3551</option>
+                <option value="R498">R498</option>
+                <option value="R527">R527</option>
+                <option value="R548">R548</option>
+                <option value="TUMBA">TUMBA</option>
+                <option value="WSSM">WSSM</option>
+                <option value="Y58S">Y58S</option>
+                <option value="YueGuang">YueGuang</option>
+                <option value="YX">YX</option>
+                <option value="ZH11">ZH11</option>
+            </select>
+
+        </li>
+    </ul>
+
+    <div class="tab-content" align="center">
+        <div id="circos"></div>
+
+        <div id="toolbar">
+                &nbsp;Keyword：
+        </div>
+
+        <table class="display table table-bordered" id="table" data-pagination="true" data-search="true"
+        data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100]" data-search-align="left" data-multiple-search="true"
+        >
+            <thead>
+                <tr>
+                    <th data-field='bid' data-sortable='true' id="bid">Block ID</th>
+                    <th data-field='query' data-sortable='true' id="query">Query</th>
+                    <th data-field='q_start' data-sortable='true' id="q_start">Start</th>
+                    <th data-field='q_stop' data-sortable='true' id="q_stop">Stop</th>
+                    <th data-field='q_gap' data-sortable='true' id="q_gap">Query gap size</th>
+                    <th data-field='ref' data-sortable='true' id="ref">Reference</th>
+                    <th data-field='r_start' data-sortable='true' id="r_start">Start</th>
+                    <th data-field='r_stop' data-sortable='true' id="r_stop">Stop</th>
+                    <th data-field='r_gap' data-sortable='true' id="r_gap">Ref gap size</th>
+                </tr>
+            </thead>
+        </table>
+
+
+    </div>
+
+    <script src="@routes.Assets.at("circos/test.js")" type="text/javascript"></script>
+
+
+    <script>
+
+            var data = [];
+
+            function Draw() {
+
+                var species = $("#select").val();
+
+                $.ajax({
+                    url: "/RiceRC/SV/getCircos?tp=" + species,
+                    type: "post",
+                    async: false,
+                    success: function (datas) {
+                        $("#circos").empty();
+                        data = [
+                            {
+                                "canvas": "circos",
+                                "ideoCollection": datas.collection,
+                                "linkCollection": datas.ur
+                            }
+                        ];
+
+                        circos();
+
+                        $("#table").bootstrapTable("load",datas.table);
+
+                    }
+                });
+            }
+
+
+            $(function () {
+                $("#select").select2();
+
+                $("#table").bootstrapTable({
+                    columns: [
+                        {
+                            field: "bid",
+                            formatter: function (value, row, index) {
+                                var de = "<a href='/RiceRC/SV/blocksBefore?id=" + row.id + "' target='_blank'>" + row.bid + "</a>";
+
+                                return de;
+                            }
+                        }
+                    ]
+                })
+
+                Draw();
+            })
+
+
+
+    </script>
+
+
+}

@@ -1,0 +1,70 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET         /                                      controllers.HomeController.home
+
+GET         /RiceRC/download/downloadBefore        controllers.HomeController.downloadBefore
+GET         /RiceRC/download/download              controllers.HomeController.download(name:String)
+GET         /RiceRC/download/linkIgvData           controllers.UtilsController.linkIgvData(path:String)
+
+
+GET         /RiceRC/tools/blastResultBefore        controllers.ToolsController.blastResultBefore(path:String)
+POST        /RiceRC/tools/blastResult              controllers.ToolsController.blastResult(path:String)
+GET         /RiceRC/tools/blastBefore              controllers.ToolsController.blastBefore
+POST        /RiceRC/tools/blastRun                 controllers.ToolsController.blastRun
+GET         /RiceRC/tools/goBefore                 controllers.ToolsController.goBefore
+
+GET         /RiceRC/tools/keggBefore               controllers.ToolsController.keggBefore
+
+GET         /RiceRC/tools/enrichmentBefore         controllers.ToolsController.enrichmentBefore
+POST        /RiceRC/tools/enrichment               controllers.ToolsController.enrichment
+
+
+
+GET         /RiceRC/tools/searchBefore             controllers.ToolsController.searchBefore
+POST        /RiceRC/tools/searchById               controllers.ToolsController.searchById
+POST        /RiceRC/tools/searchByRegion           controllers.ToolsController.searchByRegion
+
+
+GET         /RiceRC/tools/seqFetchBefore           controllers.ToolsController.seqFetchBefore
+POST        /RiceRC/tools/seqRegion                controllers.ToolsController.seqRegion
+
+
+GET         /RiceRC/utils/downloadExample          controllers.UtilsController.downloadExample(example:String)
+GET         /RiceRC/utils/download                 controllers.UtilsController.download(file:String)
+
+
+GET         /RiceRC/insert/insert                  controllers.RiceController.insert
+GET         /RiceRC/insert/insertSeq               controllers.RiceController.insertSeq
+GET         /RiceRC/insert/getLength               controllers.RiceController.getLength
+GET         /RiceRC/insert/checkSeq                controllers.RiceController.checkSeq
+GET         /RiceRC/update/updateKegg              controllers.RiceController.updateKegg
+
+GET         /RiceRC/riceInfo/riceSpecies           controllers.RiceController.riceSpecie(species:String)
+POST        /RiceRC/riceInfo/getAllSample          controllers.RiceController.getAllSample
+GET         /RiceRC/riceInfo/browse                controllers.RiceController.browse
+POST        /RiceRC/riceInfo/getAllRice            controllers.RiceController.getAllRice(species:String)
+GET         /RiceRC/riceInfo/moreInfo              controllers.RiceController.moreInfo(id:Int)
+
+
+GET         /RiceRC/Search/searchBefore            controllers.SearchController.searchBefore(input:String)
+POST        /RiceRC/search/getResult               controllers.SearchController.getResult(tp:String,input:String)
+
+
+POST        /RiceRC/SV/getAllData                  controllers.SvController.getAllData
+POST        /RiceRC/SV/getCircos                   controllers.SvController.getCircos(tp:String)
+GET         /RiceRC/SV/circosBefore                controllers.SvController.circosBefore
+GET         /RiceRC/SV/test                        controllers.SvController.test
+GET         /RiceRC/SV/insertMSU                   controllers.SvController.insertMSU
+GET         /RiceRC/SV/insertBlock                 controllers.SvController.insertBlock
+GET         /RiceRC/SV/getBlock                    controllers.SvController.getBlock
+GET         /RiceRC/SV/blocksBefore                controllers.SvController.blocksBefore(id:Int)
+POST        /RiceRC/SV/getDrawData                 controllers.SvController.getDrawData(id:Int)
+
+
+
+
+# Map static resources from the /public folder to the /assets URL path
+GET         /assets/*file                          controllers.Assets.at(path="/public", file)
